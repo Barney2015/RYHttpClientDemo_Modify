@@ -27,7 +27,7 @@
 
 - (NSString *)onlinePrivateKey
 {
-    return @"2f89fc72d09998b22585ba93205580f8";
+    return @"";
 }
 
 - (NSString *)onlinePublicKey

@@ -1024,29 +1024,27 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
             
-            if ([challenge.protectionSpace.authenticationMethod
-                 isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-                // we only trust our own domain
+            // we only trust our own domain
+            
+            for (NSString * trustHostname  in [self trustHostnames]) {
                 
-                for (NSString * trustHostname  in [self trustHostnames]) {
+                if ([challenge.protectionSpace.host isEqualToString:trustHostname]) {
+                    SecTrustRef trust = challenge.protectionSpace.serverTrust;
+                    credential = [NSURLCredential credentialForTrust:trust];
+                    [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
                     
-                    if ([challenge.protectionSpace.host isEqualToString:trustHostname]) {
-                        SecTrustRef trust = challenge.protectionSpace.serverTrust;
-                        NSURLCredential *credential = [NSURLCredential credentialForTrust:trust];
-                        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+                    if (credential) {
+                        disposition = NSURLSessionAuthChallengeUseCredential;
+                    } else {
+                        disposition = NSURLSessionAuthChallengePerformDefaultHandling;
                     }
                     
+                }else {
+                    disposition = NSURLSessionAuthChallengeRejectProtectionSpace;
                 }
+                
             }
             
-            [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
-            
-            credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-            if (credential) {
-                disposition = NSURLSessionAuthChallengeUseCredential;
-            } else {
-                disposition = NSURLSessionAuthChallengePerformDefaultHandling;
-            }
             
             /*
             if ([self.securityPolicy evaluateServerTrust:serverTrust forDomain:challenge.protectionSpace.host]) {
@@ -1103,20 +1101,27 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
             
-            SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+            // we only trust our own domain
             
-            /* 添加可信任的域名,以支持:直接使用ip访问特定https服务器.
-             Add trusted domain name to support: direct use of IP access specific HTTPS server.*/
             for (NSString * trustHostname  in [self trustHostnames]) {
-                serverTrust = AFChangeHostForTrust(serverTrust, trustHostname);
+                
+                if ([challenge.protectionSpace.host isEqualToString:trustHostname]) {
+                    SecTrustRef trust = challenge.protectionSpace.serverTrust;
+                    credential = [NSURLCredential credentialForTrust:trust];
+                    [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+                    
+                    if (credential) {
+                        disposition = NSURLSessionAuthChallengeUseCredential;
+                    } else {
+                        disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+                    }
+                    
+                }else {
+                    disposition = NSURLSessionAuthChallengeRejectProtectionSpace;
+                }
+                
             }
             
-            if ([self.securityPolicy evaluateServerTrust:serverTrust forDomain:challenge.protectionSpace.host]) {
-                disposition = NSURLSessionAuthChallengeUseCredential;
-                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-            } else {
-                disposition = NSURLSessionAuthChallengeRejectProtectionSpace;
-            }
         } else {
             disposition = NSURLSessionAuthChallengePerformDefaultHandling;
         }
