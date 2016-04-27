@@ -176,6 +176,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) BOOL attemptsToRecreateUploadTasksForBackgroundSessions;
 
+/** 可信任的域名,用于支持通过ip访问此域名下的https链接.
+ Trusted domain, this domain for support via IP access HTTPS links.
+ */
+@property(nonatomic, strong) NSMutableArray * trustHostnames;
+
 ///---------------------
 /// @name Initialization
 ///---------------------

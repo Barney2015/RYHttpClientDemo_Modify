@@ -14,7 +14,7 @@
 - (NSString *)RY_urlParamsString
 {
     NSArray *sortedArray = [self RY_transformedUrlParamsArray];
-    return [sortedArray RY_paramsString];
+    return (0 == [sortedArray count] ? nil : [sortedArray RY_paramsString]);
 }
 /** 字典变json */
 - (NSString *)RY_jsonString

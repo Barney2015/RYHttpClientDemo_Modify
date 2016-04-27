@@ -18,7 +18,7 @@
 
 - (NSString *)methodName
 {
-    return @"heweather/weather/free";
+    return @"CommonData/SelectVocationData";
 }
 
 - (BOOL)isRequestHook

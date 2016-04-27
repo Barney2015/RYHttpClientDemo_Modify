@@ -12,12 +12,13 @@
 #import "RYURLResponse.h"
 #import "RYAPILogger.h"
 #import "RYNetworkingConfiguration.h"
+#import "Aspects.h"
 
 @interface RYApiProxy ()
 
 @property (nonatomic, strong) NSNumber *recordedRequestId;
 @property (nonatomic, strong) NSMutableDictionary *dispatchTable;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *operationManager;
+@property (nonatomic, strong) AFHTTPSessionManager *operationManager;
 
 @end
 
@@ -64,8 +65,8 @@
 
 - (void)cancelRequestWithRequestID:(NSNumber *)requestID
 {
-    NSOperation *requestOperation = self.dispatchTable[requestID];
-    [requestOperation cancel];
+    NSURLSessionDataTask *requestSessionDataTask = self.dispatchTable[requestID];
+    [requestSessionDataTask cancel];
     [self.dispatchTable removeObjectForKey:requestID];
 }
 
@@ -85,38 +86,45 @@
     // 之所以不用getter，是因为如果放到getter里面的话，每次调用self.recordedRequestId的时候值就都变了，违背了getter的初衷
     NSNumber *requestId = [self generateRequestId];
     
-    AFHTTPRequestOperation *httpRequestOperation = [self.operationManager HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        AFHTTPRequestOperation *storedOperation = self.dispatchTable[requestId];
-        if (storedOperation == nil) {
+    [AFHTTPSessionManager aspect_hookSelector:@selector(trustHostnames) withOptions:AspectPositionInstead usingBlock: ^(id<AspectInfo> info){
+        
+        NSArray *hostsArray = [@"https://192.168.253.33:452/" componentsSeparatedByString:@":"];
+        NSString *hostAllowStr = [hostsArray[1] substringFromIndex:[@"//" length]];
+        __autoreleasing NSArray * trustHostnames = @[hostAllowStr];
+        
+        NSInvocation *invocation = info.originalInvocation;
+        [invocation setReturnValue:&trustHostnames];
+    }error:NULL];
+    
+    NSURLSessionDataTask *httpRequestSessionDataTask = [self.operationManager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        
+        NSURLSessionDataTask *storedSessionDataTask = self.dispatchTable[requestId];
+        
+        if (storedSessionDataTask == nil) {
             // 如果这个operation是被cancel的，那就不用处理回调了。
             return;
         } else {
             [self.dispatchTable removeObjectForKey:requestId];
         }
-        [RYAPILogger logDebugInfoWithResponse:operation.response
-                             resposeString:operation.responseString
-                                   request:operation.request
-                                     error:NULL];
-        RYURLResponse *response = [[RYURLResponse alloc] initWithResponseString:operation.responseString requestId:requestId request:request responseData:responseObject status:RYURLResponseStatusSuccess];
-        success?success(response):nil;
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        AFHTTPRequestOperation *storedOperation = self.dispatchTable[requestId];
-        if (storedOperation == nil) {
-            // 如果这个operation是被cancel的，那就不用处理回调了。
-            return;
-        } else {
-            [self.dispatchTable removeObjectForKey:requestId];
-        }
-        [RYAPILogger logDebugInfoWithResponse:operation.response
-                                resposeString:operation.responseString
-                                      request:operation.request
+        
+        [RYAPILogger logDebugInfoWithResponse:(NSHTTPURLResponse *)response
+                                resposeString:responseObject
+                                      request:request
                                         error:error];
-        RYURLResponse *response = [[RYURLResponse alloc] initWithResponseString:operation.responseString requestId:requestId request:request responseData:operation.responseObject error:error];
-        fail?fail(response):nil;
+        RYURLResponse *URLResponse = [[RYURLResponse alloc] initWithResponseString:responseObject requestId:requestId request:request responseData:responseObject status:RYURLResponseStatusSuccess];
+        
+        if (error) {
+            fail?fail(URLResponse):nil;
+        }else {
+            success?success(URLResponse):nil;
+        }
+        
     }];
     
-    self.dispatchTable[requestId] = httpRequestOperation;
-    [[self.operationManager operationQueue] addOperation:httpRequestOperation];
+    self.dispatchTable[requestId] = httpRequestSessionDataTask;
+    
+    [httpRequestSessionDataTask resume];
+    
     return requestId;
 }
 
@@ -143,12 +151,15 @@
     return _dispatchTable;
 }
 
-- (AFHTTPRequestOperationManager *)operationManager
+- (AFHTTPSessionManager *)operationManager
 {
     if (_operationManager == nil) {
-        _operationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:nil];
+        //FIXME:
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        _operationManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
+        _operationManager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
         _operationManager.operationQueue.maxConcurrentOperationCount = 10;
-        _operationManager.requestSerializer = [AFJSONRequestSerializer serializer];
+        _operationManager.requestSerializer = [AFHTTPRequestSerializer serializer];
         _operationManager.requestSerializer.timeoutInterval = kNetworkingTimeoutSeconds;
     }
     return _operationManager;

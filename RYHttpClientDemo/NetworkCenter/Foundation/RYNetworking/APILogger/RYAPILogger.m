@@ -97,6 +97,7 @@
         [logString appendFormat:@"Error Localized Description:\t\t\t%@\n", error.localizedDescription];
         [logString appendFormat:@"Error Localized Failure Reason:\t\t\t%@\n", error.localizedFailureReason];
         [logString appendFormat:@"Error Localized Recovery Suggestion:\t%@\n\n", error.localizedRecoverySuggestion];
+        [logString appendFormat:@"Error UserInfo \t%@\n\n",error.userInfo];
     }
     
     [logString appendString:@"\n---------------  Related Request Content  --------------\n"];

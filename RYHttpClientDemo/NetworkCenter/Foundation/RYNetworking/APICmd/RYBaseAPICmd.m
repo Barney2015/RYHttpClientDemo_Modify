@@ -84,7 +84,13 @@
         }
         
         NSString *methodNameURL = [NSString stringWithFormat:@"%@?%@",methodName,[requestURLParam RY_urlParamsString]];
+        
+        if (![requestURLParam RY_urlParamsString]) {
+            methodNameURL = [NSString stringWithFormat:@"%@",methodName];
+        }
+        
         _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
     } else {
         _absouteUrlString = [self.path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     }

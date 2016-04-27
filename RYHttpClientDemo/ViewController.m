@@ -35,7 +35,7 @@
 #pragma mark - APICmdApiCallBackDelegate
 - (void)apiCmdDidSuccess:(RYBaseAPICmd *)baseAPICmd response:(RYURLResponse *)response
 {
-    self.responseResult.text = response.contentString;
+    //self.responseResult.text = response.contentString;
 }
 - (void)apiCmdDidFailed:(RYBaseAPICmd *)baseAPICmd errorType:(RYBaseAPICmdErrorType)errorType
 {
@@ -44,9 +44,11 @@
 #pragma mark APICmdParamSourceDelegate
 - (NSDictionary *)paramsForApi:(RYBaseAPICmd *)apiCmd
 {
+    /*
     if (self.itemListAPICmd == apiCmd) {
         return @{@"city":self.cityPinyin.text};
     }
+     */
     return nil;
 }
 #pragma mark APICmdAspect

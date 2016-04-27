@@ -370,6 +370,54 @@ static inline BOOL af_addMethod(Class theClass, SEL selector, Method method) {
     return class_addMethod(theClass, selector,  method_getImplementation(method),  method_getTypeEncoding(method));
 }
 
+static inline SecTrustRef AFChangeHostForTrust(SecTrustRef trust, NSString * trustHostname)
+{
+    if ( ! trustHostname || [trustHostname isEqualToString:@""]) {
+        return trust;
+    }
+    
+    CFMutableArrayRef newTrustPolicies = CFArrayCreateMutable(
+                                                              kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
+    
+    SecPolicyRef sslPolicy = SecPolicyCreateSSL(true, (CFStringRef)trustHostname);
+    
+    CFArrayAppendValue(newTrustPolicies, sslPolicy);
+    
+    
+#ifdef MAC_BACKWARDS_COMPATIBILITY
+    /* This technique works in OS X (v10.5 and later) */
+    
+    SecTrustSetPolicies(trust, newTrustPolicies);
+    CFRelease(oldTrustPolicies);
+    
+    return trust;
+#else
+    /* This technique works in iOS 2 and later, or
+     OS X v10.7 and later */
+    
+    CFMutableArrayRef certificates = CFArrayCreateMutable(
+                                                          kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
+    
+    /* Copy the certificates from the original trust object */
+    CFIndex count = SecTrustGetCertificateCount(trust);
+    CFIndex i=0;
+    for (i = 0; i < count; i++) {
+        SecCertificateRef item = SecTrustGetCertificateAtIndex(trust, i);
+        CFArrayAppendValue(certificates, item);
+    }
+    
+    /* Create a new trust object */
+    SecTrustRef newtrust = NULL;
+    if (SecTrustCreateWithCertificates(certificates, newTrustPolicies, &newtrust) != errSecSuccess) {
+        /* Probably a good spot to log something. */
+        
+        return NULL;
+    }
+    
+    return newtrust;
+#endif
+}
+
 static NSString * const AFNSURLSessionTaskDidResumeNotification  = @"com.alamofire.networking.nsurlsessiontask.resume";
 static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofire.networking.nsurlsessiontask.suspend";
 
@@ -975,7 +1023,33 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         disposition = self.sessionDidReceiveAuthenticationChallenge(session, challenge, &credential);
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+            
+            if ([challenge.protectionSpace.authenticationMethod
+                 isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+                // we only trust our own domain
+                
+                for (NSString * trustHostname  in [self trustHostnames]) {
+                    
+                    if ([challenge.protectionSpace.host isEqualToString:trustHostname]) {
+                        SecTrustRef trust = challenge.protectionSpace.serverTrust;
+                        NSURLCredential *credential = [NSURLCredential credentialForTrust:trust];
+                        [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+                    }
+                    
+                }
+            }
+            
+            [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+            
+            credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+            if (credential) {
+                disposition = NSURLSessionAuthChallengeUseCredential;
+            } else {
+                disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+            }
+            
+            /*
+            if ([self.securityPolicy evaluateServerTrust:serverTrust forDomain:challenge.protectionSpace.host]) {
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
                 if (credential) {
                     disposition = NSURLSessionAuthChallengeUseCredential;
@@ -985,6 +1059,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             } else {
                 disposition = NSURLSessionAuthChallengeRejectProtectionSpace;
             }
+             */
+            
         } else {
             disposition = NSURLSessionAuthChallengePerformDefaultHandling;
         }
@@ -1026,7 +1102,16 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         disposition = self.taskDidReceiveAuthenticationChallenge(session, task, challenge, &credential);
     } else {
         if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-            if ([self.securityPolicy evaluateServerTrust:challenge.protectionSpace.serverTrust forDomain:challenge.protectionSpace.host]) {
+            
+            SecTrustRef serverTrust = challenge.protectionSpace.serverTrust;
+            
+            /* 添加可信任的域名,以支持:直接使用ip访问特定https服务器.
+             Add trusted domain name to support: direct use of IP access specific HTTPS server.*/
+            for (NSString * trustHostname  in [self trustHostnames]) {
+                serverTrust = AFChangeHostForTrust(serverTrust, trustHostname);
+            }
+            
+            if ([self.securityPolicy evaluateServerTrust:serverTrust forDomain:challenge.protectionSpace.host]) {
                 disposition = NSURLSessionAuthChallengeUseCredential;
                 credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
             } else {
