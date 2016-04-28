@@ -113,6 +113,10 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdRequestType){
     RYBaseAPICmdRequestTypePost,
     RYBaseAPICmdRequestTypeGetNormal,
     RYBaseAPICmdRequestTypePostNormal,
+    RYBaseAPICmdRequestTypeUpload,
+    RYBaseAPICmdRequestTypeUploadNormal,
+    RYBaseAPICmdRequestTypeDownLoad,
+    RYBaseAPICmdRequestTypeDownLoadNormal
 };
 
 typedef NS_ENUM (NSUInteger, RYBaseAPICmdErrorType){
@@ -150,7 +154,9 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdErrorType){
 @required
 
 - (void)apiCmdDidSuccess:(RYBaseAPICmd *)baseAPICmd responseData:(id)responseData;
-- (void)apiCmdDidFailed:(RYBaseAPICmd *)baseAPICmd error:(NSError *)error;
+- (void)apiCmdUploadProcess:(RYBaseAPICmd *)baseAPICmd progress:(NSProgress *)progress;
+- (void)apiCmdDidFailed:(RYBaseAPICmd *)baseAPICmd  error:(NSError *)error;
+
 @optional
 - (void)apiCmdDidSuccess:(RYBaseAPICmd *)baseAPICmd response:(RYURLResponse *)response;
 - (void)apiCmdDidFailed:(RYBaseAPICmd *)baseAPICmd errorType:(RYBaseAPICmdErrorType)errorType;
@@ -222,6 +228,8 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdErrorType){
 @property (nonatomic, weak) id<APICmdAspect>                aspect;
 
 
+/** GET & POST's Parameters */
+
 @property (nonatomic, copy) id reformParams;
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, readonly, assign) NSInteger requestId;
@@ -231,11 +239,16 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdErrorType){
 /// 查询当前是否loading
 @property (nonatomic, readonly, assign) BOOL isLoading;
 
+/** UploadFile's Parameters */
+
+@property (nonatomic, copy) NSString *  fileURL;
+@property (nonatomic, copy) NSString *  mimeType;
+@property (nonatomic, copy) NSString *  suffixName;
+
 /// 开始请求数据
 - (void)loadData;
 /// 取消当前的请求
 - (void)cancelRequest;
-
 
 
 @end

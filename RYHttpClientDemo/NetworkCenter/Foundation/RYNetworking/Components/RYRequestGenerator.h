@@ -18,4 +18,7 @@
 - (NSMutableURLRequest *)generateNormalGETRequestWithRequestParams:(id)requestParams url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier;
 - (NSMutableURLRequest *)generateNormalPOSTRequestWithRequestParams:(id)requestParams url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier;
 
+- (NSMutableURLRequest *)generateUploadRequestWithRequestParams:(id)requestParams url:(NSString *)url fileURL:(NSString *)fileURL mimeType:(NSString *)mimeType suffixName:(NSString *)suffixName serviceIdentifier:(NSString *)serviceIdentifier ;
+//- (NSMutableURLRequest *)generateDownloadRequestWithRequestParams:(id)requestParams fileURL:(NSString *)fileURL url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier;
+
 @end

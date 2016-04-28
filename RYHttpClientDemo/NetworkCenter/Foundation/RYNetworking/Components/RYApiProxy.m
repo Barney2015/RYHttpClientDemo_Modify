@@ -13,6 +13,27 @@
 #import "RYAPILogger.h"
 #import "RYNetworkingConfiguration.h"
 #import "Aspects.h"
+#import "RYBaseAPICmd.h"
+
+
+#define RYCompletionHandler                                                      \
+{                                                                                       \
+if (storedSessionDataTask == nil) {    \
+    return;   \
+} else {      \
+    [self.dispatchTable removeObjectForKey:requestId];\
+} \
+[RYAPILogger logDebugInfoWithResponse:(NSHTTPURLResponse *)response \
+                        resposeString:responseObject \
+                              request:request  \
+                                error:error];  \
+RYURLResponse *URLResponse = [[RYURLResponse alloc] initWithResponseString:responseObject requestId:requestId request:request responseData:responseObject status:RYURLResponseStatusSuccess]; \
+if (error) {  \
+    fail?fail(URLResponse):nil;\
+}else {\
+    success?success(URLResponse):nil; \
+}\
+}\
 
 @interface RYApiProxy ()
 
@@ -63,6 +84,18 @@
     return requestId.integerValue;
 }
 
+- (NSInteger)callUploadWithParams:(id)params url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier fileURL:(NSString *)fileURL mimeType:(NSString *)mimeType suffixName:(NSString *)suffixName success:(RYCallback)success progress:(RYUploadProgressCallBack)progress fail:(RYCallback)fail {
+    
+    NSMutableURLRequest *request = [[RYRequestGenerator sharedInstance] generateUploadRequestWithRequestParams:params url:url fileURL:fileURL mimeType:mimeType suffixName:suffixName serviceIdentifier:serviceIdentifier];
+    NSNumber *requestId = [self callUploadAPIWithRequest:request success:success progress:progress fail:fail];
+    return requestId.integerValue;
+    
+}
+
+//- (NSInteger)callDownLoadWithParams:(id)params serviceIdentifier:(NSString *)serviceIdentifier fileURL:(NSString *)fileURL url:(NSString *)url success:(RYCallback)success progress:(RYUploadProgressCallBack)progress fail:(RYCallback)fail {
+//    
+//}
+
 - (void)cancelRequestWithRequestID:(NSNumber *)requestID
 {
     NSURLSessionDataTask *requestSessionDataTask = self.dispatchTable[requestID];
@@ -94,36 +127,38 @@
         
         NSInvocation *invocation = info.originalInvocation;
         [invocation setReturnValue:&trustHostnames];
+        
     }error:NULL];
     
     NSURLSessionDataTask *httpRequestSessionDataTask = [self.operationManager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         
         NSURLSessionDataTask *storedSessionDataTask = self.dispatchTable[requestId];
         
-        if (storedSessionDataTask == nil) {
-            // 如果这个operation是被cancel的，那就不用处理回调了。
-            return;
-        } else {
-            [self.dispatchTable removeObjectForKey:requestId];
-        }
-        
-        [RYAPILogger logDebugInfoWithResponse:(NSHTTPURLResponse *)response
-                                resposeString:responseObject
-                                      request:request
-                                        error:error];
-        RYURLResponse *URLResponse = [[RYURLResponse alloc] initWithResponseString:responseObject requestId:requestId request:request responseData:responseObject status:RYURLResponseStatusSuccess];
-        
-        if (error) {
-            fail?fail(URLResponse):nil;
-        }else {
-            success?success(URLResponse):nil;
-        }
+        RYCompletionHandler;
         
     }];
     
     self.dispatchTable[requestId] = httpRequestSessionDataTask;
     
     [httpRequestSessionDataTask resume];
+    
+    return requestId;
+}
+
+- (NSNumber *)callUploadAPIWithRequest:(NSMutableURLRequest *)request success:(RYCallback)success progress:(RYUploadProgressCallBack)progress fail:(RYCallback)fail {
+    
+    NSNumber *requestId = [self generateRequestId];
+    
+    //Default setting
+    
+    NSURLSessionUploadTask * uploadTask = [self.operationManager uploadTaskWithStreamedRequest:request progress:progress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        
+        NSURLSessionUploadTask *storedSessionDataTask = self.dispatchTable[requestId];
+        
+        RYCompletionHandler;
+    }];
+    
+    [uploadTask resume];
     
     return requestId;
 }
@@ -154,8 +189,9 @@
 - (AFHTTPSessionManager *)operationManager
 {
     if (_operationManager == nil) {
-        //FIXME:
+        //FIXME://暂时使用默认值，后续优化
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        
         _operationManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
         _operationManager.securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
         _operationManager.operationQueue.maxConcurrentOperationCount = 10;

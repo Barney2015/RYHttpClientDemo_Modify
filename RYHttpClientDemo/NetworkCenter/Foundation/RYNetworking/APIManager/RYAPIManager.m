@@ -18,8 +18,26 @@
 {                                                                                       \
 __weak __typeof(baseAPICmd) weakBaseAPICmd = baseAPICmd;                                          \
 REQUEST_ID = [[RYApiProxy sharedInstance] call##REQUEST_METHOD##WithParams:baseAPICmd.reformParams serviceIdentifier:baseAPICmd.serviceIdentifier url:urlString success:^(RYURLResponse *response) { \
+__strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;               \
+[self successedOnCallingAPI:response baseAPICmd:strongBaseAPICmd];                                          \
+} fail:^(RYURLResponse *response) {                                                \
+__strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
+[self failedOnCallingAPI:response withErrorType:RYBaseAPICmdErrorTypeDefault baseAPICmd:strongBaseAPICmd];  \
+}];                                                                                 \
+[self.requestIdList addObject:@(REQUEST_ID)];                                          \
+}
+
+
+
+#define RYUploadProgressCallAPI(REQUEST_METHOD, REQUEST_ID)                                                       \
+{                                                                                       \
+__weak __typeof(baseAPICmd) weakBaseAPICmd = baseAPICmd;                                          \
+REQUEST_ID = [[RYApiProxy sharedInstance] call##REQUEST_METHOD##WithParams:baseAPICmd.reformParams url:urlString serviceIdentifier:baseAPICmd.serviceIdentifier fileURL:baseAPICmd.fileURL mimeType:baseAPICmd.mimeType suffixName:baseAPICmd.suffixName  success:^(RYURLResponse *response) { \
 __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
 [self successedOnCallingAPI:response baseAPICmd:strongBaseAPICmd];                                          \
+} progress:^(NSProgress * _Nonnull uploadProgress) {  \
+__strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;         \
+[self uploadTaskWithProgress:uploadProgress baseAPICmd:strongBaseAPICmd];            \
 } fail:^(RYURLResponse *response) {                                                \
 __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
 [self failedOnCallingAPI:response withErrorType:RYBaseAPICmdErrorTypeDefault baseAPICmd:strongBaseAPICmd];  \
@@ -67,6 +85,15 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
                 case RYBaseAPICmdRequestTypePostNormal:
                     RYCallAPI(POSTNormal, requestId);
                     break;
+                case RYBaseAPICmdRequestTypeUpload:
+                    RYUploadProgressCallAPI(Upload, requestId);
+                    break;
+                case RYBaseAPICmdRequestTypeDownLoad:
+                    break;
+                case RYBaseAPICmdRequestTypeUploadNormal:
+                    break;
+                case RYBaseAPICmdRequestTypeDownLoadNormal:
+                    break;
                 default:
                     break;
             }
@@ -110,6 +137,13 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
 
 #pragma mark - APICall
 
+/**
+ *  RequestSuccess
+ *
+ *  @param response   (Customer         RYURLResponse)
+ *  @param baseAPICmd (Single Request   RYBaseAPICmd)
+ */
+
 - (void)successedOnCallingAPI:(RYURLResponse *)response baseAPICmd:(RYBaseAPICmd *)baseAPICmd
 {
     [self removeRequestIdWithRequestID:response.requestId];
@@ -135,6 +169,22 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
         [self failedOnCallingAPI:response withErrorType:RYAPIManagerErrorTypeNoContent baseAPICmd:baseAPICmd];
     }
 }
+
+- (void)uploadTaskWithProgress:(NSProgress * _Nonnull )uploadProgress baseAPICmd:(RYBaseAPICmd *)baseAPICmd {
+    
+    if ([baseAPICmd.delegate respondsToSelector:@selector(apiCmdUploadProcess:progress:)]) {
+        [baseAPICmd.delegate apiCmdUploadProcess:baseAPICmd progress:uploadProgress];
+    }
+    
+}
+
+/**
+ *  RequestFail
+ *
+ *  @param response   (Customer          RYURLResponse)
+ *  @param errorType  (Error Type                     )
+ *  @param baseAPICmd (Single Request    RYBaseAPICmd )
+ */
 
 - (void)failedOnCallingAPI:(RYURLResponse *)response withErrorType:(RYBaseAPICmdErrorType)errorType baseAPICmd:(RYBaseAPICmd *)baseAPICmd
 {

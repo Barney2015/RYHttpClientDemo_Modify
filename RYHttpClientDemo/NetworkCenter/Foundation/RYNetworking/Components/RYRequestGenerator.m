@@ -61,6 +61,19 @@
     return request;
 }
 
+- (NSMutableURLRequest *)generateUploadRequestWithRequestParams:(id)requestParams url:(NSString *)url fileURL:(NSString *)fileURL mimeType:(NSString *)mimeType suffixName:(NSString *)suffixName serviceIdentifier:(NSString *)serviceIdentifier{
+    
+    NSMutableURLRequest *request = [self.httpRequestSerializer multipartFormRequestWithMethod:@"POST" URLString:url parameters:requestParams constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        //suffixName 需要后缀名，否则服务器无法识别
+        [formData appendPartWithFileURL:[NSURL fileURLWithPath:fileURL] name:@"file" fileName:[NSString stringWithFormat:@"fileName.%@",suffixName] mimeType:mimeType error:nil];
+    } error:nil];
+    request.timeoutInterval = kNetworkingTimeoutSeconds;
+    
+    return request;
+}
+
+//- (NSMutableURLRequest *)generateDownloadRequestWithRequestParams:(id)requestParams fileURL:(NSString *)fileURL url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier;
+
 - (NSMutableURLRequest *)generateNormalGETRequestWithRequestParams:(id)requestParams url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier
 {
     NSMutableURLRequest *request = [self.httpRequestSerializer requestWithMethod:@"GET" URLString:url parameters:nil error:NULL];
@@ -68,6 +81,7 @@
     request.requestParams = requestParams;
     return request;
 }
+
 - (NSMutableURLRequest *)generateNormalPOSTRequestWithRequestParams:(id)requestParams url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier
 {
     NSMutableURLRequest *request = [self.httpRequestSerializer requestWithMethod:@"POST" URLString:url parameters:requestParams error:NULL];
@@ -80,6 +94,7 @@
 {
     NSMutableDictionary *headerDic = [[NSMutableDictionary alloc] init];
     if (service.cookis.count != 0) {
+        //FIXME:有问题
         [headerDic addEntriesFromDictionary:service.cookis];
     }
     
