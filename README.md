@@ -19,4 +19,5 @@
 1. 修改AFN为3.0+，修改设置HTTPS
 2. 增加上传逻辑及API开发
 3. 增加参数设置方式（URL拼接&参数传入）
+4. 增加RYCookieManager管理Cookie
 
