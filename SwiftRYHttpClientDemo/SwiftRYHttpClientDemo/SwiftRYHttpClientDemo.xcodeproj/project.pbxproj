@@ -14,6 +14,9 @@
 		98C6562B1CD33A6000C62DC5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98C656291CD33A6000C62DC5 /* LaunchScreen.storyboard */; };
 		98C656361CD33A6000C62DC5 /* SwiftRYHttpClientDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C656351CD33A6000C62DC5 /* SwiftRYHttpClientDemoTests.swift */; };
 		98C656411CD33A6000C62DC5 /* SwiftRYHttpClientDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C656401CD33A6000C62DC5 /* SwiftRYHttpClientDemoUITests.swift */; };
+		98C6565E1CD33F0300C62DC5 /* RYAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C6565D1CD33F0300C62DC5 /* RYAPIManager.swift */; };
+		98C656601CD33F3C00C62DC5 /* RYBaseAPICmd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C6565F1CD33F3C00C62DC5 /* RYBaseAPICmd.swift */; };
+		98C656621CD34D7300C62DC5 /* RYURLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C656611CD34D7300C62DC5 /* RYURLResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +50,9 @@
 		98C6563C1CD33A6000C62DC5 /* SwiftRYHttpClientDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftRYHttpClientDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		98C656401CD33A6000C62DC5 /* SwiftRYHttpClientDemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftRYHttpClientDemoUITests.swift; sourceTree = "<group>"; };
 		98C656421CD33A6000C62DC5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		98C6565D1CD33F0300C62DC5 /* RYAPIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RYAPIManager.swift; sourceTree = "<group>"; };
+		98C6565F1CD33F3C00C62DC5 /* RYBaseAPICmd.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RYBaseAPICmd.swift; sourceTree = "<group>"; };
+		98C656611CD34D7300C62DC5 /* RYURLResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RYURLResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +103,7 @@
 		98C6561F1CD33A5F00C62DC5 /* SwiftRYHttpClientDemo */ = {
 			isa = PBXGroup;
 			children = (
+				98C6564E1CD33D0600C62DC5 /* NetworkCenter */,
 				98C656201CD33A5F00C62DC5 /* AppDelegate.swift */,
 				98C656221CD33A5F00C62DC5 /* ViewController.swift */,
 				98C656241CD33A5F00C62DC5 /* Main.storyboard */,
@@ -123,6 +130,128 @@
 				98C656421CD33A6000C62DC5 /* Info.plist */,
 			);
 			path = SwiftRYHttpClientDemoUITests;
+			sourceTree = "<group>";
+		};
+		98C6564E1CD33D0600C62DC5 /* NetworkCenter */ = {
+			isa = PBXGroup;
+			children = (
+				98C6564F1CD33D2800C62DC5 /* APIManagers */,
+				98C656501CD33D2800C62DC5 /* Foundation */,
+			);
+			path = NetworkCenter;
+			sourceTree = "<group>";
+		};
+		98C6564F1CD33D2800C62DC5 /* APIManagers */ = {
+			isa = PBXGroup;
+			children = (
+				98C656511CD33D4200C62DC5 /* BSAPIManagers */,
+			);
+			path = APIManagers;
+			sourceTree = "<group>";
+		};
+		98C656501CD33D2800C62DC5 /* Foundation */ = {
+			isa = PBXGroup;
+			children = (
+				98C656521CD33DFF00C62DC5 /* RYNetworking */,
+			);
+			path = Foundation;
+			sourceTree = "<group>";
+		};
+		98C656511CD33D4200C62DC5 /* BSAPIManagers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = BSAPIManagers;
+			sourceTree = "<group>";
+		};
+		98C656521CD33DFF00C62DC5 /* RYNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				98C656531CD33DFF00C62DC5 /* APICmd */,
+				98C656541CD33DFF00C62DC5 /* APILogger */,
+				98C656551CD33DFF00C62DC5 /* APIManager */,
+				98C656561CD33DFF00C62DC5 /* Assist */,
+				98C656571CD33DFF00C62DC5 /* Categories */,
+				98C656581CD33DFF00C62DC5 /* Components */,
+				98C656591CD33DFF00C62DC5 /* CookieManager */,
+				98C6565A1CD33DFF00C62DC5 /* NSEtcHosts */,
+				98C6565B1CD33DFF00C62DC5 /* Services */,
+				98C6565C1CD33DFF00C62DC5 /* UploadAPICmd */,
+			);
+			path = RYNetworking;
+			sourceTree = "<group>";
+		};
+		98C656531CD33DFF00C62DC5 /* APICmd */ = {
+			isa = PBXGroup;
+			children = (
+				98C6565F1CD33F3C00C62DC5 /* RYBaseAPICmd.swift */,
+			);
+			path = APICmd;
+			sourceTree = "<group>";
+		};
+		98C656541CD33DFF00C62DC5 /* APILogger */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = APILogger;
+			sourceTree = "<group>";
+		};
+		98C656551CD33DFF00C62DC5 /* APIManager */ = {
+			isa = PBXGroup;
+			children = (
+				98C6565D1CD33F0300C62DC5 /* RYAPIManager.swift */,
+			);
+			path = APIManager;
+			sourceTree = "<group>";
+		};
+		98C656561CD33DFF00C62DC5 /* Assist */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Assist;
+			sourceTree = "<group>";
+		};
+		98C656571CD33DFF00C62DC5 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		98C656581CD33DFF00C62DC5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				98C656611CD34D7300C62DC5 /* RYURLResponse.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		98C656591CD33DFF00C62DC5 /* CookieManager */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CookieManager;
+			sourceTree = "<group>";
+		};
+		98C6565A1CD33DFF00C62DC5 /* NSEtcHosts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = NSEtcHosts;
+			sourceTree = "<group>";
+		};
+		98C6565B1CD33DFF00C62DC5 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		98C6565C1CD33DFF00C62DC5 /* UploadAPICmd */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UploadAPICmd;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -256,6 +385,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98C656621CD34D7300C62DC5 /* RYURLResponse.swift in Sources */,
+				98C6565E1CD33F0300C62DC5 /* RYAPIManager.swift in Sources */,
+				98C656601CD33F3C00C62DC5 /* RYBaseAPICmd.swift in Sources */,
 				98C656231CD33A5F00C62DC5 /* ViewController.swift in Sources */,
 				98C656211CD33A5F00C62DC5 /* AppDelegate.swift in Sources */,
 			);
