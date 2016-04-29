@@ -26,7 +26,6 @@ typedef void(^RYUploadProgressCallBack)(NSProgress *progress);
 - (NSInteger)callPOSTWithParams:(id)params serviceIdentifier:(NSString *)serviceIdentifier url:(NSString *)url success:(RYCallback)success fail:(RYCallback)fail;
 
 - (NSInteger)callUploadWithParams:(id)params url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier fileURL:(NSString *)fileURL mimeType:(NSString *)mimeType suffixName:(NSString *)suffixName success:(RYCallback)success progress:(RYUploadProgressCallBack)progress fail:(RYCallback)fail;
-//- (NSInteger)callDownLoadWithParams:(id)params serviceIdentifier:(NSString *)serviceIdentifier fileURL:(NSString *)fileURL url:(NSString *)url success:(RYCallback)success progress:(RYUploadProgressCallBack)progress fail:(RYCallback)fail;
 
 
 - (void)cancelRequestWithRequestID:(NSNumber *)requestID;

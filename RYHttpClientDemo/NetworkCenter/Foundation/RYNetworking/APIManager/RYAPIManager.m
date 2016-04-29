@@ -67,7 +67,7 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
 {
     NSInteger requestId = 0;
     if (baseAPICmd) {
-        NSString *urlString = [baseAPICmd absouteUrlString];
+        NSString *urlString     = [baseAPICmd absouteUrlString];
         if ([baseAPICmd.interceptor respondsToSelector:@selector(apiCmdStartLoadData:)]) {
             [baseAPICmd.interceptor apiCmdStartLoadData:baseAPICmd];
         }
@@ -89,10 +89,6 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
                     RYUploadProgressCallAPI(Upload, requestId);
                     break;
                 case RYBaseAPICmdRequestTypeDownLoad:
-                    break;
-                case RYBaseAPICmdRequestTypeUploadNormal:
-                    break;
-                case RYBaseAPICmdRequestTypeDownLoadNormal:
                     break;
                 default:
                     break;
@@ -137,12 +133,7 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
 
 #pragma mark - APICall
 
-/**
- *  RequestSuccess
- *
- *  @param response   (Customer         RYURLResponse)
- *  @param baseAPICmd (Single Request   RYBaseAPICmd)
- */
+/** RequestSuccess */
 
 - (void)successedOnCallingAPI:(RYURLResponse *)response baseAPICmd:(RYBaseAPICmd *)baseAPICmd
 {
@@ -170,6 +161,8 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
     }
 }
 
+/** UploadProgress */
+
 - (void)uploadTaskWithProgress:(NSProgress * _Nonnull )uploadProgress baseAPICmd:(RYBaseAPICmd *)baseAPICmd {
     
     if ([baseAPICmd.delegate respondsToSelector:@selector(apiCmdUploadProcess:progress:)]) {
@@ -178,13 +171,7 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
     
 }
 
-/**
- *  RequestFail
- *
- *  @param response   (Customer          RYURLResponse)
- *  @param errorType  (Error Type                     )
- *  @param baseAPICmd (Single Request    RYBaseAPICmd )
- */
+/** RequestFail */
 
 - (void)failedOnCallingAPI:(RYURLResponse *)response withErrorType:(RYBaseAPICmdErrorType)errorType baseAPICmd:(RYBaseAPICmd *)baseAPICmd
 {

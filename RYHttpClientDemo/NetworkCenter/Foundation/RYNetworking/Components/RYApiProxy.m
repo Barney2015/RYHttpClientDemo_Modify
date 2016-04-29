@@ -92,10 +92,6 @@ if (error) {  \
     
 }
 
-//- (NSInteger)callDownLoadWithParams:(id)params serviceIdentifier:(NSString *)serviceIdentifier fileURL:(NSString *)fileURL url:(NSString *)url success:(RYCallback)success progress:(RYUploadProgressCallBack)progress fail:(RYCallback)fail {
-//    
-//}
-
 - (void)cancelRequestWithRequestID:(NSNumber *)requestID
 {
     NSURLSessionDataTask *requestSessionDataTask = self.dispatchTable[requestID];

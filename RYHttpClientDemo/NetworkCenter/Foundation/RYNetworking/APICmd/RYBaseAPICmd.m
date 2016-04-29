@@ -59,7 +59,7 @@
         // 解析参数：URL 以及 上传的参数
         NSMutableString *methodName = [[NSMutableString alloc] initWithString:self.child.methodName];
         NSMutableDictionary *requestURLParam = [[NSMutableDictionary alloc] init];
-        NSMutableDictionary *requestParam = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *requestParam    = [[NSMutableDictionary alloc] init];
         
         NSDictionary *paramDict = [self.paramSource paramsForApi:self];
         NSArray *requestArray = paramDict[kReformParamArray];
@@ -83,13 +83,23 @@
             self.reformParams = requestParam;
         }
         
-        NSString *methodNameURL = [NSString stringWithFormat:@"%@?%@",methodName,[requestURLParam RY_urlParamsString]];
-        
-        if (![requestURLParam RY_urlParamsString]) {
-            methodNameURL = [NSString stringWithFormat:@"%@",methodName];
+        if (self.child.parametersType == RYBaseAPICmdParametersTypeURL) {
+            
+            NSString *methodNameURL = [NSString stringWithFormat:@"%@?%@",methodName,[requestURLParam RY_urlParamsString]];
+            
+            if (![requestURLParam RY_urlParamsString]) {
+                methodNameURL = [NSString stringWithFormat:@"%@",methodName];
+            }
+            
+            _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            
+        }else {
+            
+            self.reformParams = [self.paramSource paramsForApi:self];
+            NSString *methodNameURL = [NSString stringWithFormat:@"%@",methodName];
+            _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            
         }
-        
-        _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
     } else {
         _absouteUrlString = [self.path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];

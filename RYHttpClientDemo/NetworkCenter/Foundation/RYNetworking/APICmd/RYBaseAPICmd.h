@@ -114,9 +114,13 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdRequestType){
     RYBaseAPICmdRequestTypeGetNormal,
     RYBaseAPICmdRequestTypePostNormal,
     RYBaseAPICmdRequestTypeUpload,
-    RYBaseAPICmdRequestTypeUploadNormal,
-    RYBaseAPICmdRequestTypeDownLoad,
-    RYBaseAPICmdRequestTypeDownLoadNormal
+    RYBaseAPICmdRequestTypeDownLoad
+};
+
+//请求参数设置方式
+typedef NS_ENUM(NSUInteger, RYBaseAPICmdParametersType) {
+    RYBaseAPICmdParametersTypeURL,      //请求参数以&方式拼接在请求URL中
+    RYBaseAPICmdParametersTypeParam     //请求参数以参数值的方式请求
 };
 
 typedef NS_ENUM (NSUInteger, RYBaseAPICmdErrorType){
@@ -136,6 +140,8 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdErrorType){
 @required
 //返回请求的类型
 - (RYBaseAPICmdRequestType)requestType;
+@required
+- (RYBaseAPICmdParametersType)parametersType;
 @optional
 - (NSString *)apiCmdDescription;
 - (NSString *)methodName;

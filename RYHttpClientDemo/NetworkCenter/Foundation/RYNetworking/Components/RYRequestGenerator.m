@@ -72,8 +72,6 @@
     return request;
 }
 
-//- (NSMutableURLRequest *)generateDownloadRequestWithRequestParams:(id)requestParams fileURL:(NSString *)fileURL url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier;
-
 - (NSMutableURLRequest *)generateNormalGETRequestWithRequestParams:(id)requestParams url:(NSString *)url serviceIdentifier:(NSString *)serviceIdentifier
 {
     NSMutableURLRequest *request = [self.httpRequestSerializer requestWithMethod:@"GET" URLString:url parameters:nil error:NULL];

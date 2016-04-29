@@ -10,6 +10,4 @@
 
 @interface ItemListAPICmd : RYBaseAPICmd <RYBaseAPICmdDelegate>
 
-
-
 @end

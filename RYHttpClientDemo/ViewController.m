@@ -8,11 +8,14 @@
 
 #import "ViewController.h"
 #import "ItemListAPICmd.h"
-
+#import "LoginAPICmd.h"
 
 @interface ViewController ()<APICmdApiCallBackDelegate,APICmdParamSourceDelegate,APICmdParamSourceDelegate,APICmdAspect>
 
 @property (nonatomic,strong) ItemListAPICmd *itemListAPICmd;
+//测试
+@property (nonatomic,strong) LoginAPICmd *loginAPICmd;
+
 @property (weak, nonatomic) IBOutlet UITextField *cityPinyin;
 @property (weak, nonatomic) IBOutlet UITextView  *responseResult;
 
@@ -32,6 +35,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 #pragma mark - APICmdApiCallBackDelegate
 - (void)apiCmdDidSuccess:(RYBaseAPICmd *)baseAPICmd response:(RYURLResponse *)response
 {
@@ -44,6 +48,9 @@
 #pragma mark APICmdParamSourceDelegate
 - (NSDictionary *)paramsForApi:(RYBaseAPICmd *)apiCmd
 {
+    if (self.loginAPICmd == apiCmd) {
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"13312345678",@"userName",@"11",@"password", nil];
+    }
     /*
     if (self.itemListAPICmd == apiCmd) {
         return @{@"city":self.cityPinyin.text};
@@ -60,8 +67,10 @@
 #pragma mark - event responses
 - (IBAction)beginRequestAction:(id)sender {
     if (self.cityPinyin.text.length != 0) {
-        //开始请求数据
+        //开始请求数据(GET)
         [self.itemListAPICmd loadData];
+        //(POST)
+        [self.loginAPICmd loadData];
     }
 }
  
@@ -78,6 +87,13 @@
     return _itemListAPICmd;
 }
 
-
+- (LoginAPICmd *)loginAPICmd {
+    if (!_loginAPICmd) {
+        _loginAPICmd = [[LoginAPICmd alloc] init];
+        _loginAPICmd.delegate     = self;
+        _loginAPICmd.paramSource  = self;
+    }
+    return _loginAPICmd;
+}
 
 @end

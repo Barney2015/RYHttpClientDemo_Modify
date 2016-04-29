@@ -16,6 +16,12 @@
     return RYBaseAPICmdRequestTypeGet;
 }
 
+- (RYBaseAPICmdParametersType)parametersType {
+    
+    return RYBaseAPICmdParametersTypeURL;
+    
+}
+
 - (NSString *)methodName
 {
     return @"CommonData/SelectVocationData";

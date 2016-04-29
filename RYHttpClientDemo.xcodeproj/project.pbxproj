@@ -37,6 +37,7 @@
 		4EA93D2F1C2808FB003EC468 /* GenerateRequestService.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA93D2E1C2808FB003EC468 /* GenerateRequestService.m */; };
 		4EBCCA3D1C29529E00C36544 /* NSObject+RYNetworkingMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EBCCA3C1C29529E00C36544 /* NSObject+RYNetworkingMethods.m */; };
 		4EBCCA401C29534400C36544 /* NSMutableString+RYNetworkingMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EBCCA3F1C29534400C36544 /* NSMutableString+RYNetworkingMethods.m */; };
+		98C656031CD2EFE500C62DC5 /* LoginAPICmd.m in Sources */ = {isa = PBXBuildFile; fileRef = 98C656021CD2EFE500C62DC5 /* LoginAPICmd.m */; };
 		AF81FDA93848E8DC5B26B646 /* libPods-RYHttpClientDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1770FBEE5A20A1765853124 /* libPods-RYHttpClientDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -112,6 +113,8 @@
 		4EBCCA3C1C29529E00C36544 /* NSObject+RYNetworkingMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+RYNetworkingMethods.m"; sourceTree = "<group>"; };
 		4EBCCA3E1C29534400C36544 /* NSMutableString+RYNetworkingMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableString+RYNetworkingMethods.h"; sourceTree = "<group>"; };
 		4EBCCA3F1C29534400C36544 /* NSMutableString+RYNetworkingMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableString+RYNetworkingMethods.m"; sourceTree = "<group>"; };
+		98C656011CD2EFE500C62DC5 /* LoginAPICmd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginAPICmd.h; sourceTree = "<group>"; };
+		98C656021CD2EFE500C62DC5 /* LoginAPICmd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginAPICmd.m; sourceTree = "<group>"; };
 		A1770FBEE5A20A1765853124 /* libPods-RYHttpClientDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RYHttpClientDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C64A78D5F65C48D17F3A520B /* Pods-RYHttpClientDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RYHttpClientDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RYHttpClientDemo/Pods-RYHttpClientDemo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -295,6 +298,8 @@
 			children = (
 				4E1F918F1C2A769A0065BC53 /* ItemListAPICmd.h */,
 				4E1F91901C2A769A0065BC53 /* ItemListAPICmd.m */,
+				98C656011CD2EFE500C62DC5 /* LoginAPICmd.h */,
+				98C656021CD2EFE500C62DC5 /* LoginAPICmd.m */,
 			);
 			path = BSAPIManagers;
 			sourceTree = "<group>";
@@ -572,6 +577,7 @@
 				4EA93D151C27F6C4003EC468 /* RYApiProxy.m in Sources */,
 				4EA273B71BBBB85300AD199D /* RYAPIManager.m in Sources */,
 				4E6259591C48D79A0073AFE8 /* Aspects.m in Sources */,
+				98C656031CD2EFE500C62DC5 /* LoginAPICmd.m in Sources */,
 				4EA273B51BBBB85300AD199D /* RYBaseAPICmd.m in Sources */,
 				4E89CA761C4F64E10047938B /* EtcHostsURLProtocol.m in Sources */,
 				4E89CA831C4F78090047938B /* SimplePingHelper.m in Sources */,
