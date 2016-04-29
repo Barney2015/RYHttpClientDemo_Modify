@@ -27,6 +27,16 @@
     return @"api_v2/CreditApplicationAttachment/UploadFile";
 }
 
+//上传数据类型
+- (NSString *)mimeType {
+    return @"image/jpeg";
+}
+
+//上传数据格式
+- (NSString *)suffixName {
+    return @"JPG";
+}
+
 - (BOOL)isRequestHook
 {
     return YES;

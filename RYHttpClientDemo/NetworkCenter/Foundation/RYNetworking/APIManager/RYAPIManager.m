@@ -13,6 +13,7 @@
 #import "RYApiProxy.h"
 #import "RYURLResponse.h"
 #import "RYServicePrivate.h"
+#import "RYUploadBaseAPICmd.h"
 
 #define RYCallAPI(REQUEST_METHOD, REQUEST_ID)                                                       \
 {                                                                                       \
@@ -32,7 +33,7 @@ __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
 #define RYUploadProgressCallAPI(REQUEST_METHOD, REQUEST_ID)                                                       \
 {                                                                                       \
 __weak __typeof(baseAPICmd) weakBaseAPICmd = baseAPICmd;                                          \
-REQUEST_ID = [[RYApiProxy sharedInstance] call##REQUEST_METHOD##WithParams:baseAPICmd.reformParams url:urlString serviceIdentifier:baseAPICmd.serviceIdentifier fileURL:baseAPICmd.fileURL mimeType:baseAPICmd.mimeType suffixName:baseAPICmd.suffixName  success:^(RYURLResponse *response) { \
+REQUEST_ID = [[RYApiProxy sharedInstance] call##REQUEST_METHOD##WithParams:baseAPICmd.reformParams url:urlString serviceIdentifier:baseAPICmd.serviceIdentifier fileURL:((RYUploadBaseAPICmd *)baseAPICmd).fileURL mimeType:((RYUploadBaseAPICmd *)baseAPICmd).mimeType suffixName:((RYUploadBaseAPICmd *)baseAPICmd).suffixName  success:^(RYURLResponse *response) { \
 __strong __typeof(weakBaseAPICmd) strongBaseAPICmd = weakBaseAPICmd;\
 [self successedOnCallingAPI:response baseAPICmd:strongBaseAPICmd];                                          \
 } progress:^(NSProgress * _Nonnull uploadProgress) {  \

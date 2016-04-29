@@ -1,5 +1,5 @@
 //
-//  UploadAPICmd.h
+//  RYUploadBaseAPICmd.m
 //  RYHttpClientDemo
 //
 //  Created by wwt on 16/4/29.
@@ -8,6 +8,6 @@
 
 #import "RYUploadBaseAPICmd.h"
 
-@interface UploadAPICmd : RYUploadBaseAPICmd <RYBaseAPICmdDelegate>
+@implementation RYUploadBaseAPICmd
 
 @end

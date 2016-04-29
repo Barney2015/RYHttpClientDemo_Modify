@@ -83,6 +83,7 @@
     
 }
 #pragma mark APICmdParamSourceDelegate
+
 - (NSDictionary *)paramsForApi:(RYBaseAPICmd *)apiCmd
 {
     if (self.loginAPICmd == apiCmd) {
@@ -138,8 +139,6 @@
         _uploadAPICmd = [[UploadAPICmd alloc] init];
         _uploadAPICmd.delegate     = self;
         _uploadAPICmd.paramSource  = self;
-        _uploadAPICmd.mimeType     = @"image/jpeg";
-        _uploadAPICmd.suffixName   = @"jpg";
         _uploadAPICmd.fileURL      = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingString:@"/upload.jpg"];
     }
     return _uploadAPICmd;

@@ -246,12 +246,6 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdErrorType){
 /// 查询当前是否loading
 @property (nonatomic, readonly, assign) BOOL isLoading;
 
-/** UploadFile's Parameters */
-
-@property (nonatomic, copy) NSString *  fileURL;
-@property (nonatomic, copy) NSString *  mimeType;
-@property (nonatomic, copy) NSString *  suffixName;
-
 /// 开始请求数据
 - (void)loadData;
 /// 取消当前的请求

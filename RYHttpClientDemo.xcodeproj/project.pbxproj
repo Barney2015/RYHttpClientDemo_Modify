@@ -41,6 +41,7 @@
 		98C656071CD3024900C62DC5 /* RYCookieManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 98C656061CD3024900C62DC5 /* RYCookieManager.m */; };
 		98C6560A1CD30D1D00C62DC5 /* UploadAPICmd.m in Sources */ = {isa = PBXBuildFile; fileRef = 98C656091CD30D1D00C62DC5 /* UploadAPICmd.m */; };
 		98C6560F1CD30F9100C62DC5 /* upload.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 98C6560E1CD30F9100C62DC5 /* upload.jpg */; };
+		98C656131CD32ABE00C62DC5 /* RYUploadBaseAPICmd.m in Sources */ = {isa = PBXBuildFile; fileRef = 98C656121CD32ABE00C62DC5 /* RYUploadBaseAPICmd.m */; };
 		AF81FDA93848E8DC5B26B646 /* libPods-RYHttpClientDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1770FBEE5A20A1765853124 /* libPods-RYHttpClientDemo.a */; };
 /* End PBXBuildFile section */
 
@@ -123,6 +124,8 @@
 		98C656081CD30D1D00C62DC5 /* UploadAPICmd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadAPICmd.h; sourceTree = "<group>"; };
 		98C656091CD30D1D00C62DC5 /* UploadAPICmd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UploadAPICmd.m; sourceTree = "<group>"; };
 		98C6560E1CD30F9100C62DC5 /* upload.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = upload.jpg; sourceTree = "<group>"; };
+		98C656111CD32ABE00C62DC5 /* RYUploadBaseAPICmd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RYUploadBaseAPICmd.h; sourceTree = "<group>"; };
+		98C656121CD32ABE00C62DC5 /* RYUploadBaseAPICmd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RYUploadBaseAPICmd.m; sourceTree = "<group>"; };
 		A1770FBEE5A20A1765853124 /* libPods-RYHttpClientDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RYHttpClientDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C64A78D5F65C48D17F3A520B /* Pods-RYHttpClientDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RYHttpClientDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RYHttpClientDemo/Pods-RYHttpClientDemo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -326,6 +329,7 @@
 		4EA273AB1BBBB85300AD199D /* RYNetworking */ = {
 			isa = PBXGroup;
 			children = (
+				98C656101CD32A9500C62DC5 /* UploadAPICmd */,
 				98C656041CD301F400C62DC5 /* CookieManager */,
 				4E89CA771C4F71880047938B /* Assist */,
 				4E89CA721C4F64E10047938B /* NSEtcHosts */,
@@ -453,6 +457,15 @@
 				98C6560E1CD30F9100C62DC5 /* upload.jpg */,
 			);
 			path = Image;
+			sourceTree = "<group>";
+		};
+		98C656101CD32A9500C62DC5 /* UploadAPICmd */ = {
+			isa = PBXGroup;
+			children = (
+				98C656111CD32ABE00C62DC5 /* RYUploadBaseAPICmd.h */,
+				98C656121CD32ABE00C62DC5 /* RYUploadBaseAPICmd.m */,
+			);
+			path = UploadAPICmd;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -600,6 +613,7 @@
 				4EA93D2B1C28083D003EC468 /* RYServiceKeys.m in Sources */,
 				98C656071CD3024900C62DC5 /* RYCookieManager.m in Sources */,
 				4E2CACE41B5F731B00AC0E94 /* ViewController.m in Sources */,
+				98C656131CD32ABE00C62DC5 /* RYUploadBaseAPICmd.m in Sources */,
 				4EA93D251C2805B6003EC468 /* RYServiceFactory.m in Sources */,
 				4E1F91911C2A769A0065BC53 /* ItemListAPICmd.m in Sources */,
 				4EA93D111C27EC7A003EC468 /* NSDictionary+RYNetworkingMethods.m in Sources */,
