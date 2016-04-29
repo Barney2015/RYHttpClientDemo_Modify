@@ -237,12 +237,12 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdErrorType){
 
 /** GET & POST's Parameters */
 
-@property (nonatomic, copy) id reformParams;
-@property (nonatomic, copy) NSString *path;
+@property (nonatomic, copy)             id reformParams;
+@property (nonatomic, copy)             NSString *path;
 @property (nonatomic, readonly, assign) NSInteger requestId;
-@property (nonatomic, readonly, copy) NSString *absouteUrlString;
-@property (nonatomic, readonly, copy) NSDictionary *cookie;
-@property (nonatomic, readonly, copy) NSString *serviceIdentifier;
+@property (nonatomic, readonly, copy)   NSString *absouteUrlString;
+@property (nonatomic, readonly, copy)   NSDictionary *cookie;
+@property (nonatomic, readonly, copy)   NSString *serviceIdentifier;
 /// 查询当前是否loading
 @property (nonatomic, readonly, assign) BOOL isLoading;
 
