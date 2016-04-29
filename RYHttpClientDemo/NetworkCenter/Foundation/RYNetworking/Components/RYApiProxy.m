@@ -147,7 +147,7 @@
     
     //Default setting
     
-    NSURLSessionUploadTask * uploadTask = [self.operationManager uploadTaskWithStreamedRequest:request progress:progress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+    NSURLSessionUploadTask * httpRequestSessionUploadTask = [self.operationManager uploadTaskWithStreamedRequest:request progress:progress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         
         NSURLSessionUploadTask *storedSessionDataTask = self.dispatchTable[requestId];
         
@@ -170,7 +170,9 @@
         
     }];
     
-    [uploadTask resume];
+    self.dispatchTable[requestId] = httpRequestSessionUploadTask;
+    
+    [httpRequestSessionUploadTask resume];
     
     return requestId;
 }

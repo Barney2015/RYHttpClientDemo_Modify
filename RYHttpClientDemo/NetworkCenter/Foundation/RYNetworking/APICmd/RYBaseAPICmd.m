@@ -58,47 +58,67 @@
     if ([self.paramSource respondsToSelector:@selector(paramsForApi:)]) {
         // 解析参数：URL 以及 上传的参数
         NSMutableString *methodName = [[NSMutableString alloc] initWithString:self.child.methodName];
-        NSMutableDictionary *requestURLParam = [[NSMutableDictionary alloc] init];
-        NSMutableDictionary *requestParam    = [[NSMutableDictionary alloc] init];
         
-        NSDictionary *paramDict = [self.paramSource paramsForApi:self];
-        NSArray *requestArray = paramDict[kReformParamArray];
-        [paramDict enumerateKeysAndObjectsUsingBlock:^(NSString *key, id value, BOOL *stop) {
-            if ([key rangeOfString:@"||"].length) {
-                NSRange range = [methodName rangeOfString:key];
-                [methodName replaceCharactersInRange:range withString:value];
-            } else if ([key rangeOfString:@":"].length) {
-                NSMutableString *valueKey = [NSMutableString stringWithString:key];
-                NSRange range = [valueKey rangeOfString:@":"];
-                [valueKey replaceCharactersInRange:range withString:@""];
-                requestParam[valueKey] = value;
-            } else {
-                requestURLParam[key] = value;
+        switch (self.child.parametersType) {
+                
+            case RYBaseAPICmdParametersTypeURL:
+            case RYBaseAPICmdParametersTypeParam:{
+                
+                NSMutableDictionary *requestURLParam = [[NSMutableDictionary alloc] init];
+                NSMutableDictionary *requestParam    = [[NSMutableDictionary alloc] init];
+                
+                NSDictionary *paramDict = [self.paramSource paramsForApi:self];
+#ifdef DEBUGLOGGER
+                NSAssert(0, @"需要设置参数，但是参数为nil");
+#endif
+                NSArray *requestArray = paramDict[kReformParamArray];
+                [paramDict enumerateKeysAndObjectsUsingBlock:^(NSString *key, id value, BOOL *stop) {
+                    if ([key rangeOfString:@"||"].length) {
+                        NSRange range = [methodName rangeOfString:key];
+                        [methodName replaceCharactersInRange:range withString:value];
+                    } else if ([key rangeOfString:@":"].length) {
+                        NSMutableString *valueKey = [NSMutableString stringWithString:key];
+                        NSRange range = [valueKey rangeOfString:@":"];
+                        [valueKey replaceCharactersInRange:range withString:@""];
+                        requestParam[valueKey] = value;
+                    } else {
+                        requestURLParam[key] = value;
+                    }
+                }];
+                
+                if (requestArray.count != 0) {
+                    self.reformParams = requestArray;
+                } else {
+                    self.reformParams = requestParam;
+                }
+                
+                if (self.child.parametersType == RYBaseAPICmdParametersTypeURL) {
+                    
+                    NSString *methodNameURL = [NSString stringWithFormat:@"%@?%@",methodName,[requestURLParam RY_urlParamsString]];
+                    
+                    if (![requestURLParam RY_urlParamsString]) {
+                        methodNameURL = [NSString stringWithFormat:@"%@",methodName];
+                    }
+                    
+                    _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    
+                }else {
+                    
+                    self.reformParams = [self.paramSource paramsForApi:self];
+                    NSString *methodNameURL = [NSString stringWithFormat:@"%@",methodName];
+                    _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    
+                }
+                
             }
-        }];
-        
-        if (requestArray.count != 0) {
-            self.reformParams = requestArray;
-        } else {
-            self.reformParams = requestParam;
-        }
-        
-        if (self.child.parametersType == RYBaseAPICmdParametersTypeURL) {
-            
-            NSString *methodNameURL = [NSString stringWithFormat:@"%@?%@",methodName,[requestURLParam RY_urlParamsString]];
-            
-            if (![requestURLParam RY_urlParamsString]) {
-                methodNameURL = [NSString stringWithFormat:@"%@",methodName];
+                break;
+            case RYBaseAPICmdParametersTypeNone:{
+                NSString *methodNameURL = [NSString stringWithFormat:@"%@",methodName];
+                _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             }
-            
-            _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            
-        }else {
-            
-            self.reformParams = [self.paramSource paramsForApi:self];
-            NSString *methodNameURL = [NSString stringWithFormat:@"%@",methodName];
-            _absouteUrlString = [methodNameURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            
+                break;
+            default:
+                break;
         }
         
     } else {

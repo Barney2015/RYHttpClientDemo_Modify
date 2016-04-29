@@ -119,6 +119,7 @@ typedef NS_ENUM (NSUInteger, RYBaseAPICmdRequestType){
 
 //请求参数设置方式
 typedef NS_ENUM(NSUInteger, RYBaseAPICmdParametersType) {
+    RYBaseAPICmdParametersTypeNone,     //无请求参数
     RYBaseAPICmdParametersTypeURL,      //请求参数以&方式拼接在请求URL中
     RYBaseAPICmdParametersTypeParam     //请求参数以参数值的方式请求
 };

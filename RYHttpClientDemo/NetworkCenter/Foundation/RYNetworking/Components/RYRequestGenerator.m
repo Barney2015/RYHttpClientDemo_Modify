@@ -63,9 +63,13 @@
 
 - (NSMutableURLRequest *)generateUploadRequestWithRequestParams:(id)requestParams url:(NSString *)url fileURL:(NSString *)fileURL mimeType:(NSString *)mimeType suffixName:(NSString *)suffixName serviceIdentifier:(NSString *)serviceIdentifier{
     
-    NSMutableURLRequest *request = [self.httpRequestSerializer multipartFormRequestWithMethod:@"POST" URLString:url parameters:requestParams constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+    RYService *service = [[RYServiceFactory sharedInstance] serviceWithIdentifier:serviceIdentifier];
+    NSString *urlString = [NSString stringWithFormat:@"%@%@",service.apiBaseUrl,url];
+    
+    NSMutableURLRequest *request = [self.httpRequestSerializer multipartFormRequestWithMethod:@"POST" URLString:urlString parameters:requestParams constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
         //suffixName 需要后缀名，否则服务器无法识别
-        [formData appendPartWithFileURL:[NSURL fileURLWithPath:fileURL] name:@"file" fileName:[NSString stringWithFormat:@"fileName.%@",suffixName] mimeType:mimeType error:nil];
+        [formData appendPartWithFileData:[NSData dataWithContentsOfFile:fileURL] name:@"file" fileName:[NSString stringWithFormat:@"fileName.%@",suffixName] mimeType:mimeType];
+        
     } error:nil];
     request.timeoutInterval = kNetworkingTimeoutSeconds;
     
