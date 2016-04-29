@@ -14,26 +14,7 @@
 #import "RYNetworkingConfiguration.h"
 #import "Aspects.h"
 #import "RYBaseAPICmd.h"
-
-
-#define RYCompletionHandler                                                      \
-{                                                                                       \
-if (storedSessionDataTask == nil) {    \
-    return;   \
-} else {      \
-    [self.dispatchTable removeObjectForKey:requestId];\
-} \
-[RYAPILogger logDebugInfoWithResponse:(NSHTTPURLResponse *)response \
-                        resposeString:responseObject \
-                              request:request  \
-                                error:error];  \
-RYURLResponse *URLResponse = [[RYURLResponse alloc] initWithResponseString:responseObject requestId:requestId request:request responseData:responseObject status:RYURLResponseStatusSuccess]; \
-if (error) {  \
-    fail?fail(URLResponse):nil;\
-}else {\
-    success?success(URLResponse):nil; \
-}\
-}\
+#import "RYCookieManager.h"
 
 @interface RYApiProxy ()
 
@@ -115,6 +96,8 @@ if (error) {  \
     // 之所以不用getter，是因为如果放到getter里面的话，每次调用self.recordedRequestId的时候值就都变了，违背了getter的初衷
     NSNumber *requestId = [self generateRequestId];
     
+    [[RYCookieManager manager] setCookies];
+    
     [AFHTTPSessionManager aspect_hookSelector:@selector(trustHostnames) withOptions:AspectPositionInstead usingBlock: ^(id<AspectInfo> info){
         
         NSArray *hostsArray = [@"https://192.168.253.33:452/" componentsSeparatedByString:@":"];
@@ -130,7 +113,22 @@ if (error) {  \
         
         NSURLSessionDataTask *storedSessionDataTask = self.dispatchTable[requestId];
         
-        RYCompletionHandler;
+        if (storedSessionDataTask == nil) {
+            return;
+        } else {
+            [self.dispatchTable removeObjectForKey:requestId];
+        }
+        
+        [RYAPILogger logDebugInfoWithResponse:(NSHTTPURLResponse *)response
+                                resposeString:responseObject
+                                      request:request
+                                        error:error];
+        RYURLResponse *URLResponse = [[RYURLResponse alloc] initWithResponseString:responseObject requestId:requestId request:request responseData:responseObject status:RYURLResponseStatusSuccess];
+        if (error) {
+            fail?fail(URLResponse):nil;
+        }else {
+            success?success(URLResponse):nil;
+        }
         
     }];
     
@@ -145,13 +143,31 @@ if (error) {  \
     
     NSNumber *requestId = [self generateRequestId];
     
+    [[RYCookieManager manager] setCookies];
+    
     //Default setting
     
     NSURLSessionUploadTask * uploadTask = [self.operationManager uploadTaskWithStreamedRequest:request progress:progress completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         
         NSURLSessionUploadTask *storedSessionDataTask = self.dispatchTable[requestId];
         
-        RYCompletionHandler;
+        if (storedSessionDataTask == nil) {
+            return;
+        } else {
+            [self.dispatchTable removeObjectForKey:requestId];
+        }
+        
+        [RYAPILogger logDebugInfoWithResponse:(NSHTTPURLResponse *)response
+                                resposeString:responseObject
+                                      request:request
+                                        error:error];
+        RYURLResponse *URLResponse = [[RYURLResponse alloc] initWithResponseString:responseObject requestId:requestId request:request responseData:responseObject status:RYURLResponseStatusSuccess];
+        if (error) {
+            fail?fail(URLResponse):nil;
+        }else {
+            success?success(URLResponse):nil;
+        }
+        
     }];
     
     [uploadTask resume];

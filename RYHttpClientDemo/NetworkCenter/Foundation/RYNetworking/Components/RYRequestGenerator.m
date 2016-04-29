@@ -88,19 +88,33 @@
     return request;
 }
 #pragma mark - private methods
+
+/**
+ *  设置请求头
+ *
+ *  @param service RYService
+ *
+ *  @return NSDictionary
+ */
+
 - (NSDictionary *)commRESTHeadersWithService:(RYService *)service
 {
     NSMutableDictionary *headerDic = [[NSMutableDictionary alloc] init];
-    if (service.cookis.count != 0) {
-        //FIXME:有问题
-        [headerDic addEntriesFromDictionary:service.cookis];
-    }
     
-//    [headerDic setValue:service.privateKey  forKey:@"apikey"];
     [headerDic setValue:@"application/json" forKey:@"Accept"];
     [headerDic setValue:@"application/json" forKey:@"Content-Type"];
     
     return headerDic;
+}
+
+/**
+ *  设置Cookies
+ *
+ *  @param service RYService
+ */
+
+- (void)commSETCookiesWithService:(RYService *)service {
+    
 }
 
 #pragma mark - getters and setters
